@@ -68,6 +68,21 @@ module axi_timer #(
   logic [31:0] s_cnt1_load_value;
   logic [31:0] s_cnt1_compare_value;
   
+  // Drive outputs
+  assign o_cnt0_en = s_cnt0_en;
+  assign o_cnt0_reload = s_cnt0_reload;
+  assign o_cnt0_count_up = s_cnt0_count_up;
+  assign o_cnt0_load_value = s_cnt0_load_value;
+  assign o_cnt0_compare_value = s_cnt0_compare_value;
+
+  // Timer/Counter1 related signals
+  assign o_cnt1_en = s_cnt1_en;
+  assign o_cnt1_reload = s_cnt1_reload;
+  assign o_cnt1_count_up = s_cnt1_count_up;
+  assign o_cnt1_src = s_cnt1_src;
+  assign o_cnt1_load_value = s_cnt1_load_value;
+  assign o_cnt1_compare_value = s_cnt1_compare_value;
+
   // --------------------------------------------------------------
   // Write address, write data and write wresponse
   // --------------------------------------------------------------
