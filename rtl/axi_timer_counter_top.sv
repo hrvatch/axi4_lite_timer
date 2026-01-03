@@ -34,6 +34,7 @@ module axi_timer_counter_top #(
   logic s_cnt0_count_up;
   logic [31:0] s_cnt0_load_value;
   logic [31:0] s_cnt0_compare_value;
+  logic [31:0] s_cnt0_value;
 
   // Timer/Counter1 related signals
   logic s_cnt1_en;
@@ -42,6 +43,7 @@ module axi_timer_counter_top #(
   logic s_cnt1_src;
   logic [31:0] s_cnt1_load_value;
   logic [31:0] s_cnt1_compare_value;
+  logic [31:0] s_cnt1_value;
 
   // --------------------------------------------------------------
   // AXI interface instantiation
@@ -75,13 +77,15 @@ module axi_timer_counter_top #(
     .o_cnt0_count_up      ( s_cnt0_count_up       ),
     .o_cnt0_load_value    ( s_cnt0_load_value     ),
     .o_cnt0_compare_value ( s_cnt0_compare_value  ),
+    .i_cnt0_value         ( s_cnt0_ value         ),
       // Timer/Counter1 related signals
     .o_cnt1_en            ( s_cnt1_en             ),
     .o_cnt1_reload        ( s_cnt1_reload         ),
     .o_cnt1_count_up      ( s_cnt1_count_up       ),
     .o_cnt1_src           ( s_cnt1_src            ),
     .o_cnt1_load_value    ( s_cnt1_load_value     ),
-    .o_cnt1_compare_value ( s_cnt1_compare_value  )
+    .o_cnt1_compare_value ( s_cnt1_compare_value  ),
+    .i_cnt1_value         ( s_cnt1_value          )
   );
   
   // --------------------------------------------------------------
@@ -96,12 +100,14 @@ module axi_timer_counter_top #(
     .i_cnt0_count_up      ( s_cnt0_count_up       ),
     .i_cnt0_load_value    ( s_cnt0_load_value     ),
     .i_cnt0_compare_value ( s_cnt0_compare_value  ),
+    .o_cnt0_value         ( s_cnt0_value          ),
     .i_cnt1_en            ( s_cnt1_en             ),
     .i_cnt1_reload        ( s_cnt1_reload         ),
     .i_cnt1_count_up      ( s_cnt1_count_up       ),
     .i_cnt1_src           ( s_cnt1_src            ),
     .i_cnt1_load_value    ( s_cnt1_load_value     ),
     .i_cnt1_compare_value ( s_cnt1_compare_value  ),
+    .o_cnt1_value         ( s_cnt1_value          ),
     .o_cnt0_done          ( o_cnt0_done           ),
     .o_cnt1_done          ( o_cnt1_done           )
   );

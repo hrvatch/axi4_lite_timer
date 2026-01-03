@@ -17,7 +17,11 @@ module timer_counter (
   input logic i_cnt1_src,
   input logic [31:0] i_cnt1_load_value,
   input logic [31:0] i_cnt1_compare_value,
-  
+
+  // Current Timer/counter value
+  output logic [31:0] o_cnt0_value,
+  output logic [31:0] o_cnt1_value,
+
   // Timer/Counter interrupt
   output logic o_cnt0_done,
   output logic o_cnt1_done
@@ -30,6 +34,8 @@ module timer_counter (
 
   assign o_cnt0_done = s_cnt0_done & i_cnt0_en;
   assign o_cnt1_done = s_cnt1_done & i_cnt1_en; 
+  assign o_cnt0_value = s_cnt0_value;
+  assign o_cnt1_value = s_cnt1_value;
 
   always_ff @(posedge clk) begin
     if (!rst_n) begin

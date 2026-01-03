@@ -36,13 +36,15 @@ module axi_timer #(
   output logic o_cnt0_count_up,
   output logic [31:0] o_cnt0_load_value,
   output logic [31:0] o_cnt0_compare_value,
+  input  logic [31:0] i_cnt0_value,
   // Timer/Counter1 related signals
   output logic o_cnt1_en,
   output logic o_cnt1_reload,
   output logic o_cnt1_count_up,
   output logic o_cnt1_src,
   output logic [31:0] o_cnt1_load_value,
-  output logic [31:0] o_cnt1_compare_value
+  output logic [31:0] o_cnt1_compare_value,
+  input  logic [31:0] i_cnt1_value
 );
 
   localparam logic [1:0] RESP_OKAY   = 2'b00;
@@ -195,18 +197,18 @@ module axi_timer #(
             s_cnt0_compare_value <= c_axi_wdata;
           end
 
-          'd3 : begin
+          'd4 : begin
             s_cnt1_en <= c_axi_wdata[0];
             s_cnt1_reload <= c_axi_wdata[1];
             s_cnt1_count_up <= c_axi_wdata[2];
             s_cnt1_src <= c_axi_wdata[3]; 
           end
 
-          'd4 : begin
+          'd5 : begin
             s_cnt1_load_value <= c_axi_wdata;
           end
 
-          'd5 : begin
+          'd6 : begin
             s_cnt1_compare_value <= c_axi_wdata;
           end
 
@@ -291,18 +293,26 @@ module axi_timer #(
           end
 
           'd3 : begin
+            s_axi_rdata <= i_cnt0_value;
+          end
+
+          'd4 : begin
             s_axi_rdata[0] <= s_cnt1_en;
             s_axi_rdata[1] <= s_cnt1_reload; 
             s_axi_rdata[2] <= s_cnt1_count_up;
             s_axi_rdata[3] <= s_cnt1_src; 
           end
 
-          'd4 : begin
+          'd5 : begin
             s_axi_rdata <= s_cnt1_load_value;
           end
 
-          'd5 : begin
+          'd6 : begin
             s_axi_rdata <= s_cnt1_compare_value;
+          end
+
+          'd7 : begin
+            s_axi_rdata <= s_cnt1_value;
           end
           
           default: begin
