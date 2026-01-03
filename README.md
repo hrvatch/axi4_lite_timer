@@ -24,18 +24,18 @@ to make one 64-bit Timer/Counter.
 ## Memory map
 
 ```
-0x0: TIMER0_CTRL    - Timer/Counter0 control register
-     TIMER0_CTRL[0] - Timer/Counter0 enable - 0: Disable, 1: Enable
-     TIMER0_CTRL[1] - Timer/Counter0 reload - 0: continue Counting, 1: Load initial value on rollover
-     TIMER0_CTRL[2] - Timer/Counter0 direction - 0: Count down, 1: Count up 
-0x1: TIMER0_LOAD - Timer/Counter0 load value register, 32-bit
-0x2: TIMER0_COMPARE - Timer/Counter0 compare value register, 32-bit
-0x3: TIMER1_CTRL - Timer/Counter1 control register
-     TIMER1_CTRL[0] - Timer/Counter1 enable - 0: Disable, 1: Enable
-     TIMER1_CTRL[1] - Timer/Counter1 reload - 0: continue Counting, 1: Load initial value on rollover
-     TIMER1_CTRL[2] - Timer/Counter1 direction - 0: Count down, 1: Count up 
-     TIMER1_CTRL[3] - Timer/Counter1 source - 0: Clock, 1: Counter 0 Done
-0x4: TIMER1_LOAD - Timer/Counter1 load value register, 32-bit
-0x5: TIMER1_COMPARE - Timer/Counter1 compare register, 32-bit
+0x0:  TIMER0_CTRL    - Timer/Counter0 control register
+      TIMER0_CTRL[0] - Timer/Counter0 enable - 0: Disable, 1: Enable
+      TIMER0_CTRL[1] - Timer/Counter0 reload - 0: continue Counting, 1: Load initial value on rollover
+      TIMER0_CTRL[2] - Timer/Counter0 direction - 0: Count down, 1: Count up 
+0x4:  TIMER0_LOAD - Timer/Counter0 load value register, 32-bit
+0x8:  TIMER0_COMPARE - Timer/Counter0 compare value register, 32-bit
+0xC:  TIMER1_CTRL - Timer/Counter1 control register
+      TIMER1_CTRL[0] - Timer/Counter1 enable - 0: Disable, 1: Enable
+      TIMER1_CTRL[1] - Timer/Counter1 reload - 0: continue Counting, 1: Load initial value on rollover
+      TIMER1_CTRL[2] - Timer/Counter1 direction - 0: Count down, 1: Count up 
+      TIMER1_CTRL[3] - Timer/Counter1 source - 0: Clock, 1: Counter 0 Done
+0x10: TIMER1_LOAD - Timer/Counter1 load value register, 32-bit
+0x14: TIMER1_COMPARE - Timer/Counter1 compare register, 32-bit
 ```
 
