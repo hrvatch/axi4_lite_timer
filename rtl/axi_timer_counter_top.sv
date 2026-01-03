@@ -1,4 +1,4 @@
-module axi_counter_timer_top #(
+module axi_timer_counter_top #(
   parameter AXI_ADDR_BW_p = 12    // 4k boundary by default
 ) (
   // Clock and reset
@@ -106,4 +106,4 @@ module axi_counter_timer_top #(
     .o_cnt1_done          ( o_cnt1_done           )
   );
 
-endmodule : axi_counter_timer_top
+endmodule : axi_timer_counter_top
