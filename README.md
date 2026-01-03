@@ -30,7 +30,7 @@ to make one 64-bit Timer/Counter.
       TIMER0_CTRL[2] - Timer/Counter0 direction - 0: Count down, 1: Count up 
 0x4:  TIMER0_LOAD - Timer/Counter0 load value register, 32-bit
 0x8:  TIMER0_COMPARE - Timer/Counter0 compare value register, 32-bit
-0xC:  TIMER0_VALUE - Current Timer/Counter0 value, 32-bit
+0xC:  TIMER0_VALUE - Current Timer/Counter0 value, 32-bit, read-only register
 0x10: TIMER1_CTRL - Timer/Counter1 control register
       TIMER1_CTRL[0] - Timer/Counter1 enable - 0: Disable, 1: Enable
       TIMER1_CTRL[1] - Timer/Counter1 reload - 0: continue Counting, 1: Load initial value on rollover
@@ -38,6 +38,6 @@ to make one 64-bit Timer/Counter.
       TIMER1_CTRL[3] - Timer/Counter1 source - 0: Clock, 1: Counter 0 Done
 0x14: TIMER1_LOAD - Timer/Counter1 load value register, 32-bit
 0x18: TIMER1_COMPARE - Timer/Counter1 compare register, 32-bit
-0x1C: TIMER1_VALUE - Current Timer/Counter1 value, 32-bit
+0x1C: TIMER1_VALUE - Current Timer/Counter1 value, 32-bit, read-only register
 ```
 
