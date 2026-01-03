@@ -148,6 +148,17 @@ module axi_timer #(
   always_ff @(posedge clk) begin
     if (!rst_n) begin
       s_axi_bvalid <= 1'b0;
+      s_cnt0_en <= 1'b0;
+      s_cnt0_reload <= 1'b0;
+      s_cnt0_count_up <= 1'b0;
+      s_cnt0_load_value <= '0;
+      s_cnt0_compare_value <= '0;
+      s_cnt1_en <= 1'b0;
+      s_cnt1_reload <= 1'b0;
+      s_cnt1_count_up <= 1'b0;
+      s_cnt1_src <= 1'b0;
+      s_cnt1_load_value <= '0;
+      s_cnt1_compare_value <= '0;
     end else begin
       // If there is write address and write data in the buffer
       if (valid_write_address && valid_write_data && (!o_axi_bvalid || i_axi_bready)) begin
