@@ -312,7 +312,7 @@ module axi_timer #(
           end
 
           'd7 : begin
-            s_axi_rdata <= s_cnt1_value;
+            s_axi_rdata <= i_cnt1_value;
           end
           
           default: begin

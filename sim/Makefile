@@ -25,6 +25,7 @@ compile:
 
 clean:
 	rm -rf jgproject
+	rm -rf .simvision waves.shm xcelium.d xrun.history xrun.key xrun.log
 
 help:
 	@echo "Available targets:"

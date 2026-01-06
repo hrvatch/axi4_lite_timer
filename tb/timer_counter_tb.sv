@@ -324,7 +324,9 @@ module timer_counter_tb;
     .i_cnt1_load_value    ( tb_cnt1_load_value    ),
     .i_cnt1_compare_value ( tb_cnt1_compare_value ),
     .o_cnt0_done          ( tb_cnt0_done          ),
-    .o_cnt1_done          ( tb_cnt1_done          )
+    .o_cnt1_done          ( tb_cnt1_done          ),
+    .o_cnt0_value         ( /* OPEN */            ),
+    .o_cnt1_value         ( /* OPEN */            )
   );
 
 endmodule : timer_counter_tb

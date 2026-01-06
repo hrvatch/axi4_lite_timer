@@ -77,7 +77,7 @@ module axi_timer_counter_top #(
     .o_cnt0_count_up      ( s_cnt0_count_up       ),
     .o_cnt0_load_value    ( s_cnt0_load_value     ),
     .o_cnt0_compare_value ( s_cnt0_compare_value  ),
-    .i_cnt0_value         ( s_cnt0_ value         ),
+    .i_cnt0_value         ( s_cnt0_value          ),
       // Timer/Counter1 related signals
     .o_cnt1_en            ( s_cnt1_en             ),
     .o_cnt1_reload        ( s_cnt1_reload         ),
