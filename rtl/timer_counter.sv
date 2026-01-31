@@ -1,90 +1,63 @@
-module timer_counter (
+module timer_counter #(
+  parameter int COUNTER_BW_p,
+  parameter int PRESCALER_BW_p
+) (
   // Clock and reset
-  input logic clk,
-  input logic rst_n,
+  input  logic clk,
+  input  logic rst_n,
 
-  // Timer/Counter0 related signals
-  input logic i_cnt0_en,
-  input logic i_cnt0_reload,
-  input logic i_cnt0_count_up,
-  input logic [31:0] i_cnt0_load_value,
-  input logic [31:0] i_cnt0_compare_value,
-
-  // Timer/Counter1 related signals
-  input logic i_cnt1_en,
-  input logic i_cnt1_reload,
-  input logic i_cnt1_count_up,
-  input logic i_cnt1_src,
-  input logic [31:0] i_cnt1_load_value,
-  input logic [31:0] i_cnt1_compare_value,
-
-  // Current Timer/counter value
-  output logic [31:0] o_cnt0_value,
-  output logic [31:0] o_cnt1_value,
-
-  // Timer/Counter interrupt
-  output logic o_cnt0_done,
-  output logic o_cnt1_done
+  // Counter related signals
+  input  logic [COUNTER_BW_p-1:0]    i_threshold_value,
+  input  logic [PRESCALER_BW_p-1:0]  i_prescale_value,
+  input  logic                       i_counter_reset,
+  output logic                       o_threshold,
+  output logic [COUNTER_BW_p-1:0]    o_counter_value
 );
   
-  logic [31:0] s_cnt0_value;
-  logic s_cnt0_done;
-  logic [31:0] s_cnt1_value;
-  logic s_cnt1_done;
+  logic [COUNTER_BW_p-1:0]   s_counter;
+  logic [PRESCALER_BW_p-1:0] s_prescaler;
+  logic                      s_cnt_en;
 
-  assign o_cnt0_done = s_cnt0_done & i_cnt0_en;
-  assign o_cnt1_done = s_cnt1_done & i_cnt1_en; 
-  assign o_cnt0_value = s_cnt0_value;
-  assign o_cnt1_value = s_cnt1_value;
-
+  // Prescaler
   always_ff @(posedge clk) begin
     if (!rst_n) begin
-      s_cnt0_done <= 1'b0;
-      s_cnt0_value <= '0;
+      s_cnt_en <= 1'b0;
+      s_prescaler <= '0;
     end else begin
-      s_cnt0_done <= 1'b0;
-      if (i_cnt0_en) begin
-        if (i_cnt0_count_up) begin
-          s_cnt0_value <= s_cnt0_value + 1;
-        end else begin
-          s_cnt0_value <= s_cnt0_value - 1;
-        end
-
-        if (s_cnt0_value == i_cnt0_compare_value) begin
-          s_cnt0_done <= 1'b1;
-          if (i_cnt0_reload) begin
-            s_cnt0_value <= i_cnt0_load_value;
-          end
-        end
+      if (i_counter_reset) begin
+        s_prescaler <= '0;
+        s_cnt_en <= 1'b0;
       end else begin
-        s_cnt0_value <= i_cnt0_load_value;
+        if (s_prescaler == {PRESCALER_BW_p{1'b0}}) begin
+          s_cnt_en <= 1'b1;
+          s_prescaler <= i_prescale_value;
+        end else begin
+          s_cnt_en <= 1'b0;
+          s_prescaler <= s_prescaler - 1'b1;
+        end
       end
     end
   end
+
+  // Counter
+  assign o_counter_value = s_counter;
   
   always_ff @(posedge clk) begin
     if (!rst_n) begin
-      s_cnt1_done <= 1'b0;
-      s_cnt1_value <= '0;
+      s_counter <= '0;
+      o_threshold <= 1'b0;
     end else begin
-      s_cnt1_done <= 1'b0;
-      if (i_cnt1_en) begin
-        if (!i_cnt1_src || (i_cnt1_src && s_cnt0_done)) begin
-          if (i_cnt1_count_up) begin
-            s_cnt1_value <= s_cnt1_value + 1;
-          end else begin
-            s_cnt1_value <= s_cnt1_value - 1;
-          end
-        end
-
-        if (s_cnt1_value == i_cnt1_compare_value) begin
-          s_cnt1_done <= 1'b1;
-          if (i_cnt1_reload) begin
-            s_cnt1_value <= i_cnt1_load_value;
-          end
-        end
+      if (i_counter_reset) begin
+        s_counter <= '0;
+        o_threshold <= 1'b0;
       end else begin
-        s_cnt1_value <= i_cnt1_load_value;
+        if (s_counter >= i_threshold_value) begin
+          s_counter <= '0;
+          o_threshold <= 1'b1;
+        end else begin
+          s_counter <= s_counter + 1'b1;
+          o_threshold <= 1'b0;
+        end
       end
     end
   end

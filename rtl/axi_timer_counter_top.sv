@@ -1,4 +1,5 @@
 module axi_timer_counter_top #(
+  parameter AXI_DATA_BW_p = 32,
   parameter AXI_ADDR_BW_p = 12    // 4k boundary by default
 ) (
   // Clock and reset
@@ -7,7 +8,7 @@ module axi_timer_counter_top #(
   // AXI related signals
   input logic [AXI_ADDR_BW_p-1:0] i_axi_awaddr,
   input logic  i_axi_awvalid,
-  input logic [31:0] i_axi_wdata,
+  input logic [AXI_DATA_BW_p-1:0] i_axi_wdata,
   input logic i_axi_wvalid,
   input logic i_axi_bready,
   input logic [AXI_ADDR_BW_p-1:0] i_axi_araddr,
@@ -18,37 +19,27 @@ module axi_timer_counter_top #(
   output logic [1:0] o_axi_bresp,
   output logic o_axi_bvalid,
   output logic o_axi_arready,
-  output logic [31:0] o_axi_rdata,
+  output logic [AXI_DATA_BW_p-1:0] o_axi_rdata,
   output logic [1:0] o_axi_rresp,
   output logic o_axi_rvalid,
-  output logic o_cnt0_done,
-  output logic o_cnt1_done
+  output logic o_irq
 );
 
   // --------------------------------------------------------------
   // Timer/counter related signals
   // --------------------------------------------------------------
-  // Timer/Counter0 related signals
-  logic s_cnt0_en;
-  logic s_cnt0_reload;
-  logic s_cnt0_count_up;
-  logic [31:0] s_cnt0_load_value;
-  logic [31:0] s_cnt0_compare_value;
-  logic [31:0] s_cnt0_value;
-
-  // Timer/Counter1 related signals
-  logic s_cnt1_en;
-  logic s_cnt1_reload;
-  logic s_cnt1_count_up;
-  logic s_cnt1_src;
-  logic [31:0] s_cnt1_load_value;
-  logic [31:0] s_cnt1_compare_value;
-  logic [31:0] s_cnt1_value;
+  logic s_cnt_rst;
+  logic [AXI_DATA_BW_p-1:0] s_threshold_value;
+  logic [AXI_DATA_BW_p-1:0] s_prescaler_value;
+  logic [AXI_DATA_BW_p-1:0] s_counter_value;
+  logic s_threshold;
+  logic s_counter_reset;
 
   // --------------------------------------------------------------
   // AXI interface instantiation
   // --------------------------------------------------------------
   axi_timer #(
+    .AXI_DATA_BW_p ( AXI_DATA_BW_p ),
     .AXI_ADDR_BW_p ( AXI_ADDR_BW_p )
   ) axi_timer_inst (
   // Clock and reset
@@ -71,45 +62,31 @@ module axi_timer_counter_top #(
     .o_axi_rdata          ( o_axi_rdata           ),
     .o_axi_rresp          ( o_axi_rresp           ),
     .o_axi_rvalid         ( o_axi_rvalid          ),
-      // Timer/Counter0 related signals
-    .o_cnt0_en            ( s_cnt0_en             ),
-    .o_cnt0_reload        ( s_cnt0_reload         ),
-    .o_cnt0_count_up      ( s_cnt0_count_up       ),
-    .o_cnt0_load_value    ( s_cnt0_load_value     ),
-    .o_cnt0_compare_value ( s_cnt0_compare_value  ),
-    .i_cnt0_value         ( s_cnt0_value          ),
-      // Timer/Counter1 related signals
-    .o_cnt1_en            ( s_cnt1_en             ),
-    .o_cnt1_reload        ( s_cnt1_reload         ),
-    .o_cnt1_count_up      ( s_cnt1_count_up       ),
-    .o_cnt1_src           ( s_cnt1_src            ),
-    .o_cnt1_load_value    ( s_cnt1_load_value     ),
-    .o_cnt1_compare_value ( s_cnt1_compare_value  ),
-    .i_cnt1_value         ( s_cnt1_value          )
+    .o_cnt_rst            ( s_cnt_rst             ),
+    .o_prescaler_value    ( s_prescaler_value     ),
+    .o_threshold_value    ( s_threshold_value     ),
+    .o_counter_reset      ( s_counter_reset       ),
+    .i_threshold          ( s_threshold           ),
+    .i_counter_value      ( s_counter_value       ),
+    .o_irq                ( o_irq                 )
   );
   
   // --------------------------------------------------------------
   // Timer/counter instantiation
   // --------------------------------------------------------------
-  timer_counter timer_counter_inst (
+  timer_counter #(
+    .COUNTER_BW_p   ( AXI_DATA_BW_p  ),
+    .PRESCALER_BW_p ( AXI_DATA_BW_p )
+  ) timer_counter_inst (
     // Clock and reset
     .clk                  ( clk                   ),
     .rst_n                ( rst_n                 ),
-    .i_cnt0_en            ( s_cnt0_en             ),
-    .i_cnt0_reload        ( s_cnt0_reload         ),
-    .i_cnt0_count_up      ( s_cnt0_count_up       ),
-    .i_cnt0_load_value    ( s_cnt0_load_value     ),
-    .i_cnt0_compare_value ( s_cnt0_compare_value  ),
-    .o_cnt0_value         ( s_cnt0_value          ),
-    .i_cnt1_en            ( s_cnt1_en             ),
-    .i_cnt1_reload        ( s_cnt1_reload         ),
-    .i_cnt1_count_up      ( s_cnt1_count_up       ),
-    .i_cnt1_src           ( s_cnt1_src            ),
-    .i_cnt1_load_value    ( s_cnt1_load_value     ),
-    .i_cnt1_compare_value ( s_cnt1_compare_value  ),
-    .o_cnt1_value         ( s_cnt1_value          ),
-    .o_cnt0_done          ( o_cnt0_done           ),
-    .o_cnt1_done          ( o_cnt1_done           )
+    .i_cnt_rst            ( s_cnt_rst             ),
+    .i_prescaler_value    ( s_prescaler_value     ),
+    .i_threshold_value    ( s_threshold_value     ),
+    .i_counter_reset      ( s_counter_reset       ),
+    .o_threshold          ( s_threshold           ),
+    .o_counter_value      ( s_counter_value       )
   );
 
 endmodule : axi_timer_counter_top
