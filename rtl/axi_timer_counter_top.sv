@@ -28,7 +28,6 @@ module axi_timer_counter_top #(
   // --------------------------------------------------------------
   // Timer/counter related signals
   // --------------------------------------------------------------
-  logic s_cnt_rst;
   logic [AXI_DATA_BW_p-1:0] s_threshold_value;
   logic [AXI_DATA_BW_p-1:0] s_prescaler_value;
   logic [AXI_DATA_BW_p-1:0] s_counter_value;
@@ -62,10 +61,9 @@ module axi_timer_counter_top #(
     .o_axi_rdata          ( o_axi_rdata           ),
     .o_axi_rresp          ( o_axi_rresp           ),
     .o_axi_rvalid         ( o_axi_rvalid          ),
-    .o_cnt_rst            ( s_cnt_rst             ),
+    .o_counter_reset      ( s_counter_reset       ),
     .o_prescaler_value    ( s_prescaler_value     ),
     .o_threshold_value    ( s_threshold_value     ),
-    .o_counter_reset      ( s_counter_reset       ),
     .i_threshold          ( s_threshold           ),
     .i_counter_value      ( s_counter_value       ),
     .o_irq                ( o_irq                 )
@@ -81,10 +79,9 @@ module axi_timer_counter_top #(
     // Clock and reset
     .clk                  ( clk                   ),
     .rst_n                ( rst_n                 ),
-    .i_cnt_rst            ( s_cnt_rst             ),
+    .i_counter_reset      ( s_counter_reset       ),
     .i_prescaler_value    ( s_prescaler_value     ),
     .i_threshold_value    ( s_threshold_value     ),
-    .i_counter_reset      ( s_counter_reset       ),
     .o_threshold          ( s_threshold           ),
     .o_counter_value      ( s_counter_value       )
   );

@@ -8,7 +8,7 @@ module axi_timer #(
   // AXI related signals
   input logic [AXI_ADDR_BW_p-1:0] i_axi_awaddr,
   input logic  i_axi_awvalid,
-  input logic [AXI_DATA_BW_p:0] i_axi_wdata,
+  input logic [AXI_DATA_BW_p-1:0] i_axi_wdata,
   input logic i_axi_wvalid,
   input logic i_axi_bready,
   input logic [AXI_ADDR_BW_p-1:0] i_axi_araddr,
@@ -23,7 +23,6 @@ module axi_timer #(
   output logic [1:0] o_axi_rresp,
   output logic o_axi_rvalid,
   // Timer/Counter0 related signals
-  output logic o_cnt_rst,
   output logic [AXI_DATA_BW_p-1:0] o_threshold_value,
   output logic [AXI_DATA_BW_p-1:0] o_prescaler_value,
   output logic                     o_counter_reset,
@@ -70,7 +69,7 @@ module axi_timer #(
     if (!rst_n) begin
       s_status_reg <= 1'b0;
     end else begin
-      s_status_reg <= s_threshold && !s_threshold_clear;
+      s_status_reg <= (s_status_reg | s_threshold) & ~s_threshold_clear;
     end
   end
 
@@ -163,6 +162,8 @@ module axi_timer #(
       s_axi_bvalid <= 1'b0;
       s_prescaler_value <= '0;
       s_threshold_value <= '1;
+      s_counter_reset <= 1'b1;
+      s_interrupt_enable <= 1'b0;
     end else begin
       // If there is write address and write data in the buffer
       if (valid_write_address && valid_write_data && (!o_axi_bvalid || i_axi_bready)) begin
@@ -171,16 +172,16 @@ module axi_timer #(
         
         case (c_axi_awaddr[AXI_ADDR_BW_p-1:2])
 
-          'd1 : begin
+          'd1 : begin // CTRL register
             s_interrupt_enable <= c_axi_wdata[1];
             s_counter_reset <= c_axi_wdata[0];
           end
 
-          'd3 : begin
+          'd3 : begin // PRESCALER_VALUE register
             s_prescaler_value <= c_axi_wdata;
           end
 
-          'd4 : begin
+          'd4 : begin // THRESHOLD_VALUE register
             s_threshold_value <= c_axi_wdata;
           end
 
@@ -244,12 +245,13 @@ module axi_timer #(
       s_axi_rvalid <= 1'b0;
       s_threshold_clear <= 1'b0;
     end else begin
+      s_threshold_clear <= 1'b0;
+      
       // Generate response when address is available (buffer or direct)
       if ((s_araddr_buf_used || (i_axi_arvalid && o_axi_arready)) && (!o_axi_rvalid || i_axi_rready)) begin
         s_axi_rresp <= RESP_OKAY;
         s_axi_rvalid <= 1'b1;
         s_axi_rdata <= '0;
-        s_threshold_clear <= 1'b0;
 
         case (c_axi_araddr[AXI_ADDR_BW_p-1:2])
           'd0 : begin

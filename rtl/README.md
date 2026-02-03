@@ -9,14 +9,11 @@ Counter period = (1+PRESCALER_VALUE)/Fclk, where Fclk is the system frequency (u
 
 - **32-bit prescaler:** Reduces the clock frequency by a set value before it reaches the counter.
 - **32-bit counter:** Counts prescaled clock cycles.
-- **32-bit comparator:** Compares current counter value and THRESHOLD_VALUE.
+- **32-bit comparator:** Compares current counter value and THRESHOLD_VALUE. Outputs a pulse when
+counter reaches THRESHOLD_VALUE. 
 - **Interrupt generation:** Generates interrupt when counter reaches THRESHOLD_VALUE and when
 interrupt is enabled.
 - **AXI4-Lite interface** for easy SoC integration.
-
-## Block diagram
-
-![Timer/counter block diagram](https://raw.githubusercontent.com/hrvatch/axi4_lite_timer/refs/heads/main/doc/counter.svg)
 
 ## Integration
 
@@ -69,8 +66,8 @@ axi4_lite_timer #(
 
 | Bit   | Name      | R/W | Reset | Description                                    |
 |-------|-----------|-----|-------|------------------------------------------------|
-| [31:1]| Reserved  | -   | 0x0   | Reserved                                       |
-| [0]   | THRESHOLD | RO  | 0x0   | Counter threshold status                       |
+| [31:1]| Reserved  | -   | 0     | Reserved                                       |
+| [0]   | THRESHOLD | RO  | 0     | Counter threshold status                       |
 
 THRESHOLD = 1: Counter has reached THRESHOLD_VALUE
 THRESHOLD = 0: Counter hasn't reached THRESHOLD_VALUE
@@ -84,17 +81,15 @@ status register will clear THRESHOLD bit (i.e., set it to '0').
 
 | Bit   | Name      | R/W | Reset | Description                                    |
 |-------|-----------|-----|-------|------------------------------------------------|
-| [31:2]| Reserved  | -   | 0x0   | Reserved                                       |
-| [1]   | IE        | R/W | 0x0   | Interrupt enable                               |
-| [0]   | RESET     | R/W | 0x1   | Counter reset                                  |
+| [31:2]| Reserved  | -   | 0     | Reserved                                       |
+| [1]   | IE        | R/W | 1     | Interrupt enable                               |
+| [0]   | RESET     | R/W | 1     | Counter reset                                  |
 
 IE = 1: Interrupt generation is enabled
 IE = 0: Interrupt generation is disabled
 
-RESET = 1: While RESET bit is set to '1', both prescaler and counter are reset, and held at the
-initial value until RESET is set to '0'.
-RESET = 0: Whehn RESET bit is set to '0', prescaler and counter resume normal operation;
-prescaler divides the clock cycles and counter counts prescaled clock cycles.
+RESET = 1: Resets prescaler to zero; resets counter to zero.
+RESET = 0: Normal prescaler and counter operation.
 
 ### COUNTER_VALUE (0x08)
 
